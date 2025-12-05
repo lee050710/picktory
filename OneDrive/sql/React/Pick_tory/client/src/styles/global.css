@@ -1,0 +1,550 @@
+:root{
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --primary: #0B57A4; /* deep blue primary (kept for other elements) */
+  --accent: #ff6b6b;
+  --pink-primary: #ff4d88; /* main pink used for CTA and roulette */
+  --pink-strong: #ff2d6f;
+  --pink-soft: #ffd7e4;
+  --radius: 10px;
+  --shadow: 0 8px 24px rgba(16,24,40,0.06);
+}
+
+/* 💄 귀여운 핑크 립스틱 커서 - index.html에서 적용 */
+
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:var(--bg); color:#111}
+a{color:inherit}
+
+.container{max-width:1100px;margin:0 auto;padding:20px}
+
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+
+.btn{display:inline-block;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+.btn-primary{background:linear-gradient(180deg,var(--pink-primary),var(--pink-strong));color:#fff;box-shadow:0 10px 28px rgba(255,77,136,0.16)}
+.btn-accent{background:var(--accent);color:#fff}
+.muted{color:var(--muted)}
+
+/* interactions */
+.card{transition:transform .22s ease, box-shadow .22s ease}
+.card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(16,24,40,0.12)}
+.btn{transition:transform .18s ease, box-shadow .18s ease, opacity .18s}
+.btn:active{transform:translateY(1px)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(255,77,136,0.24)}
+.btn-accent:hover{filter:brightness(.98)}
+
+/* pointer animation for roulette */
+.pointer{transition:transform .12s ease}
+.pointer.bounce{animation: bounce 1s infinite}
+@keyframes bounce{0%{transform:translateY(0)}50%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+
+/* roulette wheel spinning helper */
+.wheel-container{display:flex;align-items:center;justify-content:center;width:100%}
+.wheel-wrapper{width:480px;height:480px;max-width:480px;max-height:480px;position:relative;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), rgba(0,0,0,0)), linear-gradient(180deg,#ffffff,#f3f6fb);box-shadow:0 25px 60px rgba(2,6,23,0.2);display:flex;align-items:center;justify-content:center;overflow:visible;padding:20px;aspect-ratio:1/1}
+.wheel-rotator{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:50%;overflow:visible;filter:drop-shadow(0 18px 28px rgba(2,6,23,0.22));transform-origin:center center}
+.wheel-rotator.spinning{animation:wheel-spin 0.7s linear infinite}
+@keyframes wheel-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* heart center button and ring */
+.heart-btn{width:110px;height:110px;border-radius:999px;border:0;background:transparent;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.heart-btn[disabled]{opacity:0.45;cursor:not-allowed}
+.heart-ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:150px;height:150px;border-radius:50%;pointer-events:none;box-shadow:0 24px 50px rgba(0,112,243,0.10);opacity:0.95}
+.heart-btn svg{width:80px;height:80px;display:block}
+.heart-gradient stop[offset="0%"]{stop-color:#ff7a7a}
+.heart-gradient stop[offset="60%"]{stop-color:#ff5252}
+.heart-btn:hover{transform:translateY(-3px)}
+.heart-btn:active{transform:translateY(0) scale(.98)}
+.heart-cost{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:800;color:var(--primary)}
+
+/* new heart-button + center ring styles (used by RouletteWheel) */
+.heart-button{width:108px;height:108px;border-radius:999px;border:0;background:linear-gradient(180deg,#fff,#ffeef0);padding:8px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;position:relative;box-shadow:0 10px 30px rgba(255,60,80,0.12);z-index:62}
+.heart-button.disabled{opacity:0.55;cursor:not-allowed}
+.center-ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:170px;height:170px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), rgba(0,0,0,0));box-shadow:0 22px 48px rgba(255,80,90,0.06);z-index:58}
+.heart-icon{display:block}
+.spin-cost{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:800;color:#ff3d00}
+
+.heart-button:active{transform:translateY(1px) scale(.98)}
+.heart-button:hover{transform:translateY(-3px)}
+
+/* subtle pulse to attract attention when ready to spin */
+.heart-button.pulse{animation:heartPulse 2.2s infinite;}
+@keyframes heartPulse{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+
+/* confetti pieces (simple float + fade) */
+.confetti{position:absolute;width:10px;height:14px;border-radius:2px;z-index:70;opacity:1;animation:confettiFall 1.6s forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}60%{opacity:1}100%{transform:translateY(120px) rotate(720deg);opacity:0}}
+
+/* segment icon tweaks */
+.segment-icon{pointer-events:none}
+
+/* adjust wheel stop transition easing for dramatic slow-down */
+.wheel-rotator{transition: transform 4s cubic-bezier(.19,1,.22,1)}
+
+/* ripple effect for center button */
+.ripple{position:absolute;border-radius:50%;background:rgba(255,77,77,0.16);transform:scale(0);animation:rippleAnim .6s ease-out;pointer-events:none}
+@keyframes rippleAnim{from{transform:scale(0);opacity:0.9}to{transform:scale(2);opacity:0}}
+
+/* small tweak: ensure confetti uses will-change for smoother animation */
+.confetti{will-change:transform,opacity}
+
+/* inner ring (visual center) */
+.wheel-inner-ring{position:absolute;width:68px;height:68px;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,#ffffff,#f1f5ff);box-shadow:inset 0 3px 8px rgba(0,0,0,0.08);z-index:45}
+
+
+/* inner center button */
+.wheel-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:60;display:flex;align-items:center;justify-content:center}
+.spin-btn{background:linear-gradient(180deg,var(--primary),#0046d6);color:#fff;border:none;padding:14px 24px;border-radius:999px;font-weight:800;box-shadow:0 12px 30px rgba(0,102,255,0.24);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease;letter-spacing:0.4px}
+.spin-btn--accent{background:linear-gradient(180deg,var(--accent),#ff4a00);box-shadow:0 12px 30px rgba(255,106,0,0.24)}
+.spin-btn .cost{display:block;font-size:12px;opacity:0.9;margin-top:4px}
+
+/* segment text tweaks for readability */
+svg{max-width:100%;height:auto;display:block}
+svg text{font-family:Inter, Arial, sans-serif; font-weight:700; fill:#10203a; text-shadow:0 1px 0 rgba(255,255,255,0.3)}
+
+/* segment separators */
+.wheel-wrapper svg path{transition:fill .18s ease, transform .25s ease}
+.wheel-sep{stroke:rgba(0,0,0,0.06);stroke-width:1}
+
+/* subtle page transitions */
+.fade-in{animation:fadeIn .38s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* header/nav */
+.site-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(90deg,#fff,#fbfdff);box-shadow:0 2px 8px rgba(16,24,40,0.03)}
+.site-nav .links a{margin-left:14px;color:var(--muted);text-decoration:none}
+.site-brand{font-weight:700;font-size:18px}
+
+/* Enhanced nav styles for visual clarity and CTA */
+.site-brand{font-weight:800;font-size:20px;letter-spacing:0.2px;color:var(--primary)}
+.site-nav .links{display:flex;align-items:center;gap:12px}
+.site-nav .links a{padding:8px 10px;border-radius:8px;transition:background .15s ease,color .15s ease}
+.site-nav .links a:hover{background:rgba(11,87,164,0.06);color:var(--primary)}
+
+/* Cute nav-link styles */
+.nav-link{display:inline-block;padding:8px 12px;border-radius:999px;color:var(--muted);text-decoration:none;font-weight:700;transition:transform .18s cubic-bezier(.2,.9,.3,1),box-shadow .18s ease,color .12s ease;background:transparent}
+.nav-link:hover{transform:translateY(-3px);color:var(--pink-strong);box-shadow:0 10px 26px rgba(255,45,111,0.08);background:linear-gradient(180deg,rgba(255,213,226,0.6),rgba(255,244,247,0.2))}
+.nav-link.active{color:#fff;background:linear-gradient(180deg,#ffb3d9,#ff8bc4);box-shadow:0 14px 38px rgba(255,139,196,0.16);transform:translateY(-4px)}
+.nav-link:focus{outline:none;box-shadow:0 10px 30px rgba(255,45,111,0.14)}
+
+/* small decorative badge on active (cute dot) */
+.nav-link.active::after{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;margin-left:8px;box-shadow:0 2px 6px rgba(0,0,0,0.06);vertical-align:middle}
+
+/* compact header look: subtle rounded panel */
+.site-nav{padding:10px 18px;background:linear-gradient(180deg, #ffffff, #fff7fb);border-radius:14px;box-shadow:0 6px 20px rgba(16,24,40,0.04);align-items:center}
+
+/* make logout button look small and rounded to match */
+.site-nav .btn{border-radius:10px;padding:6px 10px}
+
+@media(max-width:800px){
+  .site-nav{flex-direction:row;gap:8px;padding:12px}
+  .nav-link{padding:7px 10px;font-size:14px}
+}
+
+/* nav icon style (cute badges) */
+.nav-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--pink-soft);color:var(--pink-strong);font-size:15px;margin-right:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.6);transition:transform .12s ease,box-shadow .12s ease}
+.nav-link:hover .nav-icon{transform:translateY(-3px) rotate(-8deg);box-shadow:0 8px 18px rgba(255,45,111,0.08)}
+.nav-link.active .nav-icon{background:linear-gradient(180deg,#fff2f8,var(--pink-soft));color:var(--pink-strong);box-shadow:0 10px 28px rgba(255,45,111,0.12)}
+.site-nav .btn .nav-icon{background:transparent;margin-right:6px}
+
+/* ensure icon/text align nicely */
+.nav-link span{vertical-align:middle}
+.site-nav .btn span{vertical-align:middle}
+
+/* logo sizing — default larger, scale down on small screens */
+.site-brand img.site-logo{height:92px;width:auto;display:block;transition:transform .28s cubic-bezier(.2,.9,.3,1), filter .28s ease;filter:drop-shadow(0 8px 24px rgba(255,77,136,0.12));animation:logoFloat 3.5s ease-in-out infinite}
+.site-brand:hover img.site-logo{transform:translateY(-4px) scale(1.05);filter:drop-shadow(0 16px 40px rgba(255,77,136,0.22))}
+
+/* logo float animation */
+@keyframes logoFloat{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+
+/* logo glow pulse */
+.site-brand{position:relative}
+.site-brand::before{content:'';position:absolute;inset:-8px;border-radius:50%;background:radial-gradient(circle, rgba(255,77,136,0.15), transparent 70%);opacity:0;animation:logoGlow 3s ease-in-out infinite;pointer-events:none;z-index:-1}
+@keyframes logoGlow{0%{opacity:0;transform:scale(0.9)}50%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(0.9)}}
+
+/* logo shine effect on hover */
+.site-brand{overflow:hidden;border-radius:12px}
+.site-brand::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);transform:skewX(-20deg);transition:left .6s ease}
+.site-brand:hover::after{left:150%}
+
+@media(max-width:720px){
+  .site-brand img.site-logo{height:68px}
+}
+
+/* Roulette CTA button */
+
+/* Pink 3D Roulette CTA: glossy gradient, subtle perspective and pulse */
+.roulette-cta{
+  background:linear-gradient(180deg,var(--pink-primary),var(--pink-strong));
+  color:#fff;
+  padding:10px 16px;
+  border-radius:999px;
+  border:none;
+  font-weight:900;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  box-shadow:0 18px 42px rgba(255,77,140,0.16), inset 0 1px 0 rgba(255,255,255,0.22);
+  transition:transform .18s cubic-bezier(.2,.9,.3,1), box-shadow .18s ease, filter .12s ease;
+  transform-origin:center;
+  will-change:transform,box-shadow;
+  position:relative;
+  perspective:700px;
+}
+.roulette-cta:active{transform:translateY(1px) scale(.995)}
+.roulette-cta:hover{transform:translateY(-4px) rotateX(4deg);box-shadow:0 26px 60px rgba(255,77,140,0.22), inset 0 2px 0 rgba(255,255,255,0.24)}
+
+/* glossy highlight */
+.roulette-cta::before{content:'';position:absolute;left:6%;top:6%;width:88%;height:44%;border-radius:999px;background:linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0.06));pointer-events:none;mix-blend-mode:screen;opacity:0.95}
+
+/* 3D depth on press */
+.roulette-cta:focus{outline:none}
+
+/* icon rotate and slight bob */
+.roulette-cta .icon-rotate{display:inline-block;transform-origin:center;transition:transform .28s ease}
+.roulette-cta.pulse{animation:ctaPinkPulse 2.4s infinite}
+@keyframes ctaPinkPulse{0%{box-shadow:0 14px 34px rgba(255,77,140,0.12);transform:translateY(0)}50%{box-shadow:0 28px 60px rgba(255,77,140,0.18);transform:translateY(-6px)}100%{box-shadow:0 14px 34px rgba(255,77,140,0.12);transform:translateY(0)}}
+
+.roulette-cta.spin .icon-rotate{animation:iconSpin .9s linear infinite}
+@keyframes iconSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* make button appear a bit raised with inner shadow for depth */
+.roulette-cta .label{display:inline-block;transform:translateZ(10px)}
+
+/* small responsive tweak */
+@media(max-width:720px){
+  .roulette-cta{padding:8px 12px;gap:8px}
+}
+
+/* review list */
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+
+/* responsive tweaks */
+@media(max-width:720px){.site-nav{flex-direction:column;gap:8px}.container{padding:12px}}
+
+/* --- Site-wide decorative & animated effects --- */
+
+/* animated page background gradient (subtle, slow) */
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:-2;
+  background:linear-gradient(120deg,#fff0f6 0%, #ffeef4 25%, #fff7fb 50%, #fffaf0 75%, #fff0f6 100%);
+  background-size:400% 400%;
+  animation:bgFlow 18s linear infinite;
+  opacity:0.95;
+}
+@keyframes bgFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+/* floating blobs (decorative) */
+.floating-blob{position:fixed;border-radius:50%;filter:blur(28px);opacity:0.14;pointer-events:none;z-index:-1;animation:blobFloat 12s ease-in-out infinite}
+.floating-blob.b1{width:420px;height:420px;left:-80px;top:8vh;background:linear-gradient(180deg,#ffd7e4,#ffb3d1);animation-duration:16s}
+.floating-blob.b2{width:320px;height:320px;right:-60px;bottom:6vh;background:linear-gradient(180deg,#ffe7f2,#ffd1ea);animation-duration:20s}
+@keyframes blobFloat{0%{transform:translateY(0) translateX(0) scale(1)}50%{transform:translateY(-28px) translateX(14px) scale(1.04)}100%{transform:translateY(0) translateX(0) scale(1)}}
+
+/* card shimmer effect for .card when extra highlight is needed */
+.card.shimmer{position:relative;overflow:hidden}
+.card.shimmer::after{content:'';position:absolute;left:-120%;top:0;height:100%;width:60%;background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.7), rgba(255,255,255,0));transform:skewX(-18deg);animation:shimmer 2.2s linear infinite}
+@keyframes shimmer{0%{left:-120%}100%{left:120%}}
+
+/* image tilt hover: gentle 3D tilt + subtle shadow */
+.tilt{transition:transform .28s cubic-bezier(.2,.9,.3,1), box-shadow .28s ease}
+.tilt:hover{transform:perspective(800px) rotateX(4deg) rotateY(-6deg) translateY(-6px);box-shadow:0 24px 60px rgba(2,6,23,0.10)}
+
+/* nav underline slide for secondary emphasis */
+.nav-link{position:relative}
+.nav-link::before{content:'';position:absolute;left:12%;right:12%;height:3px;border-radius:99px;background:linear-gradient(90deg,var(--pink-primary),var(--pink-strong));bottom:-8px;transform:scaleX(0);transform-origin:left center;transition:transform .28s cubic-bezier(.2,.9,.3,1),opacity .18s}
+.nav-link:hover::before,.nav-link.active::before{transform:scaleX(1);opacity:1}
+
+/* subtle page transitions: use .page-enter on route changes */
+.page-enter{animation:pageEnter .42s ease both}
+@keyframes pageEnter{0%{opacity:0;transform:translateY(8px) scale(.995)}100%{opacity:1;transform:translateY(0) scale(1)}}
+
+/* clickable ripple for CTA buttons (JS may add .ripple-el element) */
+.ripple-el{position:absolute;border-radius:50%;background:rgba(255,255,255,0.32);transform:scale(0);animation:ripplePop .6s ease-out;pointer-events:none}
+@keyframes ripplePop{0%{transform:scale(0);opacity:0.9}100%{transform:scale(3);opacity:0}}
+
+/* small floating badge for notifications */
+.float-badge{position:relative;display:inline-block}
+.float-badge .badge{position:absolute;top:-8px;right:-8px;background:var(--pink-strong);color:#fff;border-radius:999px;padding:4px 6px;font-size:11px;box-shadow:0 6px 20px rgba(255,45,111,0.18);transform-origin:center;animation:badgeBounce 2.8s infinite}
+@keyframes badgeBounce{0%{transform:translateY(0)}50%{transform:translateY(-5px)}100%{transform:translateY(0)}}
+
+/* make subtle header glow when hovering CTA area */
+.site-nav:hover{box-shadow:0 20px 50px rgba(255,45,111,0.04)}
+
+/* reduce visual noise on low-spec devices */
+@media (prefers-reduced-motion: reduce){
+  body::before,.floating-blob,.card.shimmer::after,.nav-link.pulse,.roulette-cta.pulse{animation: none !important; transition: none !important}
+}
+
+/* ==================== */
+/* 🎀 화려한 웹 테두리 장식 */
+/* ==================== */
+
+/* 상단 테두리 장식 */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    #ff4d88 0%, 
+    #ffd700 15%, 
+    #ff8c00 30%, 
+    #a855f7 45%, 
+    #3b82f6 60%, 
+    #10b981 75%, 
+    #ff4d88 90%,
+    #ffd700 100%);
+  background-size: 200% 100%;
+  animation: rainbowBorder 4s linear infinite;
+  z-index: 10000;
+  box-shadow: 0 2px 20px rgba(255,77,136,0.5);
+}
+
+@keyframes rainbowBorder {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* 좌측 테두리 장식 */
+.left-border-decoration {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, 
+    #ff4d88 0%, 
+    #ffd700 25%, 
+    #a855f7 50%, 
+    #3b82f6 75%, 
+    #ff4d88 100%);
+  background-size: 100% 200%;
+  animation: verticalRainbow 6s linear infinite;
+  z-index: 10000;
+  box-shadow: 2px 0 20px rgba(255,77,136,0.4);
+}
+
+/* 우측 테두리 장식 */
+.right-border-decoration {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, 
+    #ffd700 0%, 
+    #ff4d88 25%, 
+    #3b82f6 50%, 
+    #a855f7 75%, 
+    #ffd700 100%);
+  background-size: 100% 200%;
+  animation: verticalRainbow 6s linear infinite reverse;
+  z-index: 10000;
+  box-shadow: -2px 0 20px rgba(255,215,0,0.4);
+}
+
+@keyframes verticalRainbow {
+  0% { background-position: 50% 0%; }
+  100% { background-position: 50% 200%; }
+}
+
+/* 코너 장식 */
+.corner-decoration {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  z-index: 10001;
+  pointer-events: none;
+}
+
+.corner-decoration.top-left {
+  top: 0;
+  left: 0;
+  background: radial-gradient(circle at 0 0, rgba(255,77,136,0.6) 0%, transparent 70%);
+}
+
+.corner-decoration.top-right {
+  top: 0;
+  right: 0;
+  background: radial-gradient(circle at 100% 0, rgba(255,215,0,0.6) 0%, transparent 70%);
+}
+
+.corner-decoration.bottom-left {
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(circle at 0 100%, rgba(168,85,247,0.6) 0%, transparent 70%);
+}
+
+.corner-decoration.bottom-right {
+  bottom: 0;
+  right: 0;
+  background: radial-gradient(circle at 100% 100%, rgba(59,130,246,0.6) 0%, transparent 70%);
+}
+
+/* 스파클 애니메이션 (ReviewCard에서 사용) */
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+/* 플로팅 장식 이모지 */
+.floating-emoji {
+  position: fixed;
+  font-size: 24px;
+  pointer-events: none;
+  z-index: 9998;
+  animation: floatEmoji 8s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+.floating-emoji:nth-child(1) { top: 15%; left: 3%; animation-delay: 0s; }
+.floating-emoji:nth-child(2) { top: 35%; right: 4%; animation-delay: 1s; }
+.floating-emoji:nth-child(3) { top: 55%; left: 2%; animation-delay: 2s; }
+.floating-emoji:nth-child(4) { top: 75%; right: 3%; animation-delay: 3s; }
+
+@keyframes floatEmoji {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-15px) rotate(10deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-10px) rotate(-10deg); }
+}
+
+/* 하단 테두리 */
+.bottom-border-decoration {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    #ffd700 0%, 
+    #ff4d88 20%, 
+    #a855f7 40%, 
+    #3b82f6 60%, 
+    #10b981 80%, 
+    #ffd700 100%);
+  background-size: 200% 100%;
+  animation: rainbowBorder 4s linear infinite reverse;
+  z-index: 10000;
+  box-shadow: 0 -2px 20px rgba(255,215,0,0.5);
+}
+
+/* ==================== */
+/* 📱 Explore 페이지 모바일 반응형 */
+/* ==================== */
+
+/* Explore 페이지 기본 스타일 */
+.explore-page { padding: 20px 20px 40px; }
+.explore-header h1 { margin: 0; font-size: 28px; background: linear-gradient(135deg, #ff4d88, #ff8a5c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.explore-header p { color: #666; margin-top: 8px; }
+
+/* 맞춤 Pick-tory 그리드 */
+.picktory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.picktory-main { grid-row: span 2; }
+
+/* 트렌드 버블 영역 */
+.trend-bubbles { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; min-height: 200px; }
+
+/* 키워드 클라우드 */
+.keyword-cloud { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+/* 크리에이터 룩북 그리드 */
+.lookbook-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+/* 브랜드 리포트 장단점 그리드 */
+.brand-report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* 급상승 리뷰어 그리드 */
+.reviewers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+/* 카테고리 필터 */
+.category-filters { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* 📱 모바일 반응형 (768px 이하) */
+@media (max-width: 768px) {
+  .explore-page { padding: 16px 12px 32px; }
+  .explore-header h1 { font-size: 22px; }
+  .explore-header p { font-size: 13px; }
+
+  /* 맞춤 Pick-tory: 1열로 변경 */
+  .picktory-grid { grid-template-columns: 1fr; gap: 12px; }
+  .picktory-main { grid-row: auto; padding: 16px !important; }
+  .picktory-main h3 { font-size: 18px !important; }
+  .picktory-main img { height: 140px !important; }
+
+  /* 서브 카드 가로 스크롤 */
+  .picktory-sub-wrapper { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .picktory-sub-wrapper::-webkit-scrollbar { height: 4px; }
+  .picktory-sub-wrapper::-webkit-scrollbar-thumb { background: #ffd7e4; border-radius: 4px; }
+  .picktory-sub { flex: 0 0 70%; scroll-snap-align: start; }
+
+  /* 트렌드 버블 작게 */
+  .trend-bubbles { gap: 10px; min-height: 150px; padding: 16px !important; }
+  .trend-bubble { transform: scale(0.85); }
+
+  /* 키워드 클라우드 */
+  .keyword-cloud { gap: 6px; padding: 14px !important; }
+  .keyword-cloud span { font-size: 12px !important; padding: 4px 8px !important; }
+
+  /* 크리에이터 룩북: 가로 스크롤 */
+  .lookbook-grid { grid-template-columns: none; display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .lookbook-grid::-webkit-scrollbar { height: 4px; }
+  .lookbook-grid::-webkit-scrollbar-thumb { background: #e0d4f7; border-radius: 4px; }
+  .lookbook-item { flex: 0 0 65%; scroll-snap-align: start; min-width: 200px; }
+
+  /* 브랜드 리포트: 1열 */
+  .brand-report-grid { grid-template-columns: 1fr; gap: 12px; }
+  .brand-report-section { padding: 12px !important; }
+  .brand-report-header { flex-direction: column; gap: 12px; text-align: center; }
+  .brand-report-header > div:last-child { text-align: center; }
+
+  /* 급상승 리뷰어: 가로 스크롤 */
+  .reviewers-grid { grid-template-columns: none; display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .reviewers-grid::-webkit-scrollbar { height: 4px; }
+  .reviewers-grid::-webkit-scrollbar-thumb { background: #d1fae5; border-radius: 4px; }
+  .reviewer-card { flex: 0 0 70%; scroll-snap-align: start; min-width: 200px; padding: 16px !important; }
+  .reviewer-card img { width: 56px !important; height: 56px !important; }
+
+  /* 카테고리 필터 */
+  .category-filters { gap: 8px; }
+  .category-filters button { padding: 8px 12px !important; font-size: 13px; }
+
+  /* 포인트 배너 */
+  .reward-banner { flex-direction: column; text-align: center; gap: 12px !important; padding: 14px !important; }
+  .reward-banner > div:last-child { width: 100%; text-align: center; }
+
+  /* 섹션 헤더 */
+  .section-header { flex-wrap: wrap; gap: 6px !important; margin-bottom: 12px !important; }
+  .section-header h2 { font-size: 17px !important; }
+  .section-header span { font-size: 11px !important; }
+}
+
+/* 📱 더 작은 화면 (480px 이하) */
+@media (max-width: 480px) {
+  .explore-page { padding: 12px 10px 24px; }
+  .explore-header h1 { font-size: 20px; }
+
+  .picktory-main { padding: 12px !important; }
+  .picktory-main h3 { font-size: 16px !important; }
+  .picktory-main img { height: 120px !important; }
+  .picktory-sub { flex: 0 0 80%; }
+
+  .trend-bubbles { padding: 12px !important; }
+  .trend-bubble { transform: scale(0.75); }
+
+  .lookbook-item { flex: 0 0 75%; }
+  .reviewer-card { flex: 0 0 80%; }
+
+  /* 유저 프로필 뱃지 */
+  .user-profile-badge { padding: 3px 8px !important; font-size: 10px !important; }
+}
