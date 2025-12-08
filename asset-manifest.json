@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/picktory/static/css/main.8ff1af91.css",
+    "main.css": "/picktory/static/css/main.f68d8d44.css",
     "main.js": "/picktory/static/js/main.007b05a0.js",
     "index.html": "/picktory/index.html",
-    "main.8ff1af91.css.map": "/picktory/static/css/main.8ff1af91.css.map",
+    "main.f68d8d44.css.map": "/picktory/static/css/main.f68d8d44.css.map",
     "main.007b05a0.js.map": "/picktory/static/js/main.007b05a0.js.map"
   },
   "entrypoints": [
-    "static/css/main.8ff1af91.css",
+    "static/css/main.f68d8d44.css",
     "static/js/main.007b05a0.js"
   ]
 }
