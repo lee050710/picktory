@@ -72,47 +72,56 @@ function Feed() {
   // ✅ 내가 쓴 리뷰인지 판별 (로그인 유저 + 익명 anonKey 둘 다)
   function isMyReview(review) {
     const a = review.author;
+    const anonKey = localStorage.getItem("anonKey");
 
-    // 1) 로그인 유저 기준
-    if (currentUserName && a) {
+    // 🔹 현재 브라우저(나)를 나타낼 수 있는 모든 값들을 후보로 모은다
+    const meCandidates = [
+      effectiveUser?.username,
+      effectiveUser?.name,
+      effectiveUser?.email,
+      effectiveUser?._id,
+      effectiveUser?.id,
+      effectiveUser?.userId, // 혹시 이런 필드명 쓸 수도 있어서 추가
+      currentUserName,
+      anonKey, // 게스트일 때의 고유 키
+    ].filter(Boolean);
+
+    // 🔹 이 리뷰에 저장된 "작성자" 관련 값들을 모두 후보로 모은다
+    const authorCandidates = (() => {
+      if (!a) return [];
+
       if (typeof a === "string") {
-        if (a === currentUserName) return true;
+        return [a];
       }
 
       if (typeof a === "object") {
-        const candidates = [a.username, a.name, a.email, a.id, a._id].filter(
-          Boolean
-        );
-        const meCandidates = [
-          effectiveUser?.username,
-          effectiveUser?.name,
-          effectiveUser?.email,
-          effectiveUser?._id,
-          effectiveUser?.id,
-          currentUserName,
+        return [
+          a.username,
+          a.name,
+          a.email,
+          a.id,
+          a._id,
+          a.userId,
+          a.anonHash,
         ].filter(Boolean);
-
-        if (candidates.some((v) => meCandidates.includes(v))) {
-          return true;
-        }
       }
+
+      return [];
+    })();
+
+    // 리뷰 객체 최상단에 anonHash가 따로 있을 수도 있으니 같이 비교
+    if (review.anonHash) {
+      authorCandidates.push(review.anonHash);
     }
 
-    // 2) 익명 anonKey 기준
-    const anonKey = localStorage.getItem("anonKey");
-    if (
-      !effectiveUser &&
-      anonKey &&
-      review.anonHash &&
-      review.anonHash === anonKey
-    ) {
+    // 🔹 두 집합이 하나라도 겹치면 "내가 쓴 리뷰"로 인정
+    if (meCandidates.some((v) => authorCandidates.includes(v))) {
       return true;
     }
 
     return false;
   }
 
-  // ✍ 내가 작성한 리뷰 리스트
   const myReviews = reviews.filter((r) => isMyReview(r));
 
   useEffect(() => {
