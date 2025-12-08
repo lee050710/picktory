@@ -13,6 +13,27 @@ import {
 import sampleReviews from "../data/sampleReviews";
 import { AuthContext } from "../context/AuthContext";
 
+function getUsernameFromAuthor(author) {
+  if (!author) return "익명";
+
+  if (typeof author === "string") {
+    return author;
+  }
+
+  if (typeof author === "object") {
+    return (
+      author.username ||
+      author.name ||
+      author.email ||
+      author.nickname ||
+      author._id || // 마지막 수단으로 _id라도
+      "익명"
+    );
+  }
+
+  return String(author);
+}
+
 function Feed() {
   const navigate = useNavigate();
   const reviewSectionRef = useRef(null);
@@ -1262,9 +1283,7 @@ function Feed() {
                 <div key={r._id} className="feed-card">
                   <ReviewCard
                     id={r._id}
-                    username={
-                      r.author?.username || r.author?.name || r.author || "익명"
-                    }
+                    username={getUsernameFromAuthor(r.author)}
                     brand={r.brand}
                     product={r.product}
                     title={r.title}
@@ -1351,9 +1370,7 @@ function Feed() {
                 <div key={r._id} className="feed-card">
                   <ReviewCard
                     id={r._id}
-                    username={
-                      r.author?.username || r.author?.name || r.author || "익명"
-                    }
+                    username={getUsernameFromAuthor(r.author)}
                     brand={r.brand}
                     product={r.product}
                     title={r.title}
@@ -1365,8 +1382,7 @@ function Feed() {
                     commentsList={r.comments || []}
                     tags={r.tags}
                     rating={r.rating}
-                    // 내 리뷰는 항상 수정/삭제 가능
-                    canEdit={true}
+                    canEdit={isMyReview(r)}
                     onEdit={() => openEditModal(r)}
                     onDelete={handleDelete}
                     onAddComment={handleAddComment}

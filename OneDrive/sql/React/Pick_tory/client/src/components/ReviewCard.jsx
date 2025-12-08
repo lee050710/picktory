@@ -64,6 +64,25 @@ function ReviewCard({
     await onDeleteComment(id, commentId);
   };
 
+  const getCommentAuthorName = (c) => {
+    const a = c.author;
+    if (!a) return "익명";
+
+    if (typeof a === "string") return a;
+
+    if (typeof a === "object") {
+      return (
+        a.username ||
+        a.name ||
+        a.email ||
+        a.nickname || // 있으면
+        "익명"
+      );
+    }
+
+    return "익명";
+  };
+
   const canDeleteComment = (c) => {
     if (!currentUserName || !c.author) return false;
 
@@ -85,12 +104,6 @@ function ReviewCard({
 
     return false;
   };
-
-  // ✅ 내가 쓴 리뷰인지 판별 (로그인 유저 이름 == 카드의 username)
-  const isMyReview =
-    !!currentUserName && !!username && currentUserName === username;
-
-  const canEditResolved = canEdit || isMyReview;
 
   return (
     <article
@@ -272,7 +285,7 @@ function ReviewCard({
                   color: "#fff",
                 }}
               >
-                {username?.slice(0, 1) || "U"}
+                {typeof username === "string" ? username.slice(0, 1) : "U"}
               </div>
               <div>
                 <div
@@ -329,20 +342,32 @@ function ReviewCard({
               }}
             >
               {tags &&
-                tags.slice(0, 3).map((t, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      background: "rgba(255,77,136,0.08)",
-                      color: "#ff4d88",
-                      padding: "4px 8px",
-                      borderRadius: 16,
-                      fontSize: 12,
-                    }}
-                  >
-                    #{t}
-                  </span>
-                ))}
+                tags.slice(0, 3).map((t, i) => {
+                  const label =
+                    typeof t === "string"
+                      ? t
+                      : t && typeof t === "object"
+                      ? t.name || t.label || t._id
+                      : String(t);
+
+                  const key =
+                    (t && typeof t === "object" && (t._id || t.id)) ?? i;
+
+                  return (
+                    <span
+                      key={key}
+                      style={{
+                        background: "rgba(255,77,136,0.08)",
+                        color: "#ff4d88",
+                        padding: "4px 8px",
+                        borderRadius: 16,
+                        fontSize: 12,
+                      }}
+                    >
+                      #{label}
+                    </span>
+                  );
+                })}
             </div>
           </div>
 
@@ -411,8 +436,7 @@ function ReviewCard({
           </div>
         </div>
 
-        {/* ✅ 우측 하단 수정/삭제 버튼 */}
-        {canEditResolved && (
+        {canEdit && (
           <div
             style={{
               marginTop: 10,
@@ -520,9 +544,7 @@ function ReviewCard({
                         fontWeight: 700,
                       }}
                     >
-                      {(c.author && (c.author.username || c.author.name)) ||
-                        c.author ||
-                        "익명"}
+                      {getCommentAuthorName(c)}
                     </div>
                     <div
                       style={{
