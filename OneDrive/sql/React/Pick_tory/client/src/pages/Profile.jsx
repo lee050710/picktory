@@ -371,7 +371,7 @@ function Profile() {
                 boxShadow: '0 12px 40px rgba(255,77,136,0.25)',
                 animation: 'borderGlow 3s ease-in-out infinite'
               }}>
-                <img src="/images/avatar.jpg" alt="프로필" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={`${process.env.PUBLIC_URL}/images/avatar.jpg`} alt="프로필" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               {/* 온라인 상태 뱃지 */}
               <div style={{

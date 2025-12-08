@@ -6,6 +6,7 @@ const ReviewSchema = new mongoose.Schema({
   title: { type: String },
   text: { type: String, required: true },
   images: [String],
+  // 댓글 필드 제거 (원래대로)
   category: String, // beauty / fashion / etc
   tags: [String],
   likes: { type: Number, default: 0 }

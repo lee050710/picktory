@@ -15,6 +15,8 @@ const [password2, setPassword2] = useState('');
 const [showPassword, setShowPassword] = useState(false);
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState(null);
+const containerRef = useRef(null);
+const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
 const handleSubmit = async (e) => {
 e.preventDefault();

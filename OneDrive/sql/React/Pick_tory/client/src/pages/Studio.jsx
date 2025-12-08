@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 
 // 가상 제품 데이터베이스
 const productDatabase = [
-  { id: 1, name: '비타민C 세럼', brand: '이니스프리', category: '스킨케어', image: '/images/비타민세럼리뷰.jpg' },
-  { id: 2, name: '그린티 씨드 세럼', brand: '이니스프리', category: '스킨케어', image: '/images/비타민세럼리뷰.jpg' },
-  { id: 3, name: '센시티브 립 밤', brand: '헤라', category: '립메이크업', image: '/images/립스틱리뷰.jpg' },
-  { id: 4, name: '퓨어 클렌징 폼', brand: '라네즈', category: '클렌징', image: '/images/클렌징폼리뷰.jpg' },
-  { id: 5, name: '워터뱅크 수분크림', brand: '라네즈', category: '스킨케어', image: '/images/cream.png' },
-  { id: 6, name: '진정 마스크팩 10매', brand: '메디힐', category: '마스크팩', image: '/images/마스크팩리뷰.jpg' },
-  { id: 7, name: '글로우 쿠션', brand: '에뛰드', category: '베이스메이크업', image: '/images/파운데이션리뷰.jpg' },
-  { id: 8, name: '벨벳 틴트', brand: '롬앤', category: '립메이크업', image: '/images/립스틱리뷰.jpg' },
+  { id: 1, name: '비타민C 세럼', brand: '이니스프리', category: '스킨케어', image: `${process.env.PUBLIC_URL}/images/비타민세럼리뷰.jpg` },
+  { id: 2, name: '그린티 씨드 세럼', brand: '이니스프리', category: '스킨케어', image: `${process.env.PUBLIC_URL}/images/비타민세럼리뷰.jpg` },
+  { id: 3, name: '센시티브 립 밤', brand: '헤라', category: '립메이크업', image: `${process.env.PUBLIC_URL}/images/립스틱리뷰.jpg` },
+  { id: 4, name: '퓨어 클렌징 폼', brand: '라네즈', category: '클렌징', image: `${process.env.PUBLIC_URL}/images/클렌징폼리뷰.jpg` },
+  { id: 5, name: '워터뱅크 수분크림', brand: '라네즈', category: '스킨케어', image: `${process.env.PUBLIC_URL}/images/cream.png` },
+  { id: 6, name: '진정 마스크팩 10매', brand: '메디힐', category: '마스크팩', image: `${process.env.PUBLIC_URL}/images/마스크팩리뷰.jpg` },
+  { id: 7, name: '글로우 쿠션', brand: '에뛰드', category: '베이스메이크업', image: `${process.env.PUBLIC_URL}/images/파운데이션리뷰.jpg` },
+  { id: 8, name: '벨벳 틴트', brand: '롬앤', category: '립메이크업', image: `${process.env.PUBLIC_URL}/images/립스틱리뷰.jpg` },
 ];
 
 // SNS 템플릿 옵션
@@ -44,6 +44,7 @@ function Studio() {
   const [dragOver, setDragOver] = useState(false);
   const [savedToPortfolio, setSavedToPortfolio] = useState(false);
   const [showCollabModal, setShowCollabModal] = useState(false);
+  const [showSubmitSuccess, setShowSubmitSuccess] = useState(false); // 제출 완료 알림
   const fileRef = useRef();
 
   // 스마트 예측 함수 (로컬에서 계산 - API 불필요)
@@ -267,7 +268,19 @@ function Studio() {
       adTags: { ad: adTagAd, sponsored: adTagSponsored }
     };
     console.log('협찬 제안서 제출', payload);
-    alert('협찬 제안서가 생성되었습니다!');
+    
+    // 성공 알림 표시
+    setShowSubmitSuccess(true);
+    setTimeout(() => setShowSubmitSuccess(false), 3000);
+    
+    // 폼 초기화
+    setTitle('');
+    setBrand('');
+    setProductName('');
+    setBudget('');
+    setBrief('');
+    setCategories([]);
+    setFiles([]);
   };
 
   const saveToPortfolio = () => {
@@ -291,8 +304,87 @@ function Studio() {
   const suggestions = getQualitySuggestions();
 
   return (
-    <div className="container page-enter" style={{ padding: 20 }}>
+    <div className="container page-enter" style={{ padding: 20, background: 'linear-gradient(180deg, #fff 0%, #fff8fa 50%, #f8f5ff 100%)', minHeight: '100vh' }}>
       
+      {/* 🎉 제출 완료 성공 알림 - 더 화려하게 */}
+      {showSubmitSuccess && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: 'linear-gradient(135deg, #ff4d88 0%, #ff6b9d 50%, #a855f7 100%)',
+          borderRadius: 28,
+          padding: '44px 60px',
+          boxShadow: '0 30px 80px rgba(255,77,136,0.5), 0 0 100px rgba(168,85,247,0.3)',
+          zIndex: 100000,
+          textAlign: 'center',
+          animation: 'popIn 0.4s ease-out',
+          border: '3px solid rgba(255,255,255,0.3)'
+        }}>
+          <div style={{ 
+            position: 'absolute', 
+            top: -20, 
+            left: '50%', 
+            transform: 'translateX(-50%)',
+            fontSize: 50,
+            animation: 'bounce 1s ease-in-out infinite'
+          }}>🎊</div>
+          <div style={{ fontSize: 80, marginBottom: 16, marginTop: 10, animation: 'bounce 0.8s ease-in-out infinite' }}>🎉</div>
+          <div style={{ color: '#fff', fontSize: 34, fontWeight: 900, marginBottom: 10, textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>게시완료!</div>
+          <div style={{ color: 'rgba(255,255,255,0.95)', fontSize: 22, fontWeight: 700 }}>아이 잘하네~ 💕</div>
+          <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: 15, marginTop: 12 }}>협찬 제안서가 성공적으로 등록되었어요!</div>
+          <div style={{ 
+            marginTop: 16, 
+            display: 'flex', 
+            gap: 8, 
+            justifyContent: 'center'
+          }}>
+            {['✨', '💖', '🌟', '💕', '✨'].map((emoji, i) => (
+              <span key={i} style={{ 
+                fontSize: 24, 
+                animation: `sparkle ${1 + i * 0.2}s ease-in-out infinite`,
+                animationDelay: `${i * 0.1}s`
+              }}>{emoji}</span>
+            ))}
+          </div>
+        </div>
+      )}
+      {showSubmitSuccess && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.4)',
+          zIndex: 99999,
+          backdropFilter: 'blur(6px)'
+        }} />
+      )}
+
+      {/* CSS 애니메이션 */}
+      <style>{`
+        @keyframes popIn {
+          0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+          50% { transform: translate(-50%, -50%) scale(1.1); }
+          100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes sparkle {
+          0%, 100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
+          50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes glow {
+          0%, 100% { box-shadow: 0 4px 20px rgba(255,77,136,0.2); }
+          50% { box-shadow: 0 8px 40px rgba(255,77,136,0.4); }
+        }
+      `}</style>
+
       {/* 브랜드 콜라보 제안 알림 */}
       <div style={{ 
         background: 'linear-gradient(135deg, #fef3c7 0%, #fff 100%)', 

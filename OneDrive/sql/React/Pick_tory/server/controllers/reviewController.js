@@ -38,7 +38,7 @@ const createReview = async (req, res, next) => {
   try {
     const { title, text, images, category, tags } = req.body;
     const review = await Review.create({
-      author: req.user.id,
+      author: req.user._id || req.user.id,
       title,
       text,
       images: images || [],
@@ -51,4 +51,49 @@ const createReview = async (req, res, next) => {
   }
 };
 
-module.exports = { getReviews, getReview, createReview };
+const updateReview = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const review = await Review.findById(id);
+    if (!review) return res.status(404).json({ message: '리뷰를 찾을 수 없습니다.' });
+
+    // 소유자 확인
+    const userId = req.user._id || req.user.id;
+    if (!review.author || review.author.toString() !== userId.toString()) {
+      return res.status(403).json({ message: '권한이 없습니다.' });
+    }
+
+    const { title, text, images, category, tags } = req.body;
+    if (title !== undefined) review.title = title;
+    if (text !== undefined) review.text = text;
+    if (images !== undefined) review.images = images;
+    if (category !== undefined) review.category = category;
+    if (tags !== undefined) review.tags = tags;
+
+    const updated = await review.save();
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteReview = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const review = await Review.findById(id);
+    if (!review) return res.status(404).json({ message: '리뷰를 찾을 수 없습니다.' });
+
+    const userId = req.user._id || req.user.id;
+    if (!review.author || review.author.toString() !== userId.toString()) {
+      return res.status(403).json({ message: '권한이 없습니다.' });
+    }
+
+    await review.remove();
+    res.json({ message: '리뷰가 삭제되었습니다.' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+module.exports = { getReviews, getReview, createReview, updateReview, deleteReview };

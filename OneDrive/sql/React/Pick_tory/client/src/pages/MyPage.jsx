@@ -7,7 +7,7 @@ function MyPage() {
   const navigate = useNavigate();
   const user = { 
     username: authUser?.username || '연지', 
-    avatar: '/images/avatar.jpg', 
+    avatar: `${process.env.PUBLIC_URL}/images/avatar.jpg`, 
     bio: '뷰티 제품을 주로 리뷰하는 크리에이터입니다. 진솔한 사용후기를 제공합니다.', 
     points: 1240 
   };
@@ -33,12 +33,12 @@ function MyPage() {
   };
 
   const sampleReviews = [
-    { id: 'r001', title: '비타민C 세럼 효과 대박!', text: '피부 톤이 한 단계 밝아진 느낌이에요. 끈적임 없이 흡수도 빠르고 아침에 사용하기 좋아요.', image: '/images/비타민세럼리뷰.jpg', likes: 342 },
-    { id: 'r002', title: '수분크림 강추합니다', text: '건성 피부인데 이 크림 바르고 하루 종일 촉촉해요. 화장 전 베이스로도 완벽!', image: '/images/cream.png', likes: 298 },
-    { id: 'r003', title: '쿠션 파운데이션 커버력 굿', text: '얇게 발라도 커버가 잘 되고 광도 예뻐요. 지속력도 괜찮은 편입니다.', image: '/images/파운데이션리뷰.jpg', likes: 215 },
-    { id: 'r004', title: '클렌징폼 순해요', text: '민감한 피부인데도 자극 없이 깨끗하게 세안돼요. 향도 은은하고 좋아요.', image: '/images/클렌징폼리뷰.jpg', likes: 189 },
-    { id: 'r005', title: '틴트 발색 예쁨', text: '자연스러운 색감에 촉촉함도 있어서 데일리용으로 최고! 지속력도 좋습니다.', image: '/images/립스틱리뷰.jpg', likes: 267 },
-    { id: 'r006', title: '마스크팩 진정 효과 좋아요', text: '피부 진정에 정말 좋고 다음날 피부결이 정돈된 느낌이에요. 자주 쓸 예정!', image: '/images/마스크팩리뷰.jpg', likes: 156 },
+    { id: 'r001', title: '비타민C 세럼 효과 대박!', text: '피부 톤이 한 단계 밝아진 느낌이에요. 끈적임 없이 흡수도 빠르고 아침에 사용하기 좋아요.', image: `${process.env.PUBLIC_URL}/images/비타민세럼리뷰.jpg`, likes: 342 },
+    { id: 'r002', title: '수분크림 강추합니다', text: '건성 피부인데 이 크림 바르고 하루 종일 촉촉해요. 화장 전 베이스로도 완벽!', image: `${process.env.PUBLIC_URL}/images/cream.png`, likes: 298 },
+    { id: 'r003', title: '쿠션 파운데이션 커버력 굿', text: '얇게 발라도 커버가 잘 되고 광도 예뻐요. 지속력도 괜찮은 편입니다.', image: `${process.env.PUBLIC_URL}/images/파운데이션리뷰.jpg`, likes: 215 },
+    { id: 'r004', title: '클렌징폼 순해요', text: '민감한 피부인데도 자극 없이 깨끗하게 세안돼요. 향도 은은하고 좋아요.', image: `${process.env.PUBLIC_URL}/images/클렌징폼리뷰.jpg`, likes: 189 },
+    { id: 'r005', title: '틴트 발색 예쁨', text: '자연스러운 색감에 촉촉함도 있어서 데일리용으로 최고! 지속력도 좋습니다.', image: `${process.env.PUBLIC_URL}/images/립스틱리뷰.jpg`, likes: 267 },
+    { id: 'r006', title: '마스크팩 진정 효과 좋아요', text: '피부 진정에 정말 좋고 다음날 피부결이 정돈된 느낌이에요. 자주 쓸 예정!', image: `${process.env.PUBLIC_URL}/images/마스크팩리뷰.jpg`, likes: 156 },
   ];
 
   // localStorage에서 쿠폰 가져오기 (룰렛&쿠폰 페이지와 연동)
@@ -60,8 +60,8 @@ function MyPage() {
 
   // 협찬 포트폴리오 데이터
   const portfolioItems = [
-    { id: 'sp001', title: '겨울 보습 캠페인', brand: '이니스프리', status: 'completed', template: '인스타그램 피드', createdAt: '2024.11.20', thumbnail: '/images/비타민세럼리뷰.jpg' },
-    { id: 'sp002', title: '립 신제품 체험단', brand: '롬앤', status: 'in-progress', template: '틱톡 캡션', createdAt: '2024.11.25', thumbnail: '/images/립스틱리뷰.jpg' },
+    { id: 'sp001', title: '겨울 보습 캠페인', brand: '이니스프리', status: 'completed', template: '인스타그램 피드', createdAt: '2024.11.20', thumbnail: `${process.env.PUBLIC_URL}/images/비타민세럼리뷰.jpg` },
+    { id: 'sp002', title: '립 신제품 체험단', brand: '롬앤', status: 'in-progress', template: '틱톡 캡션', createdAt: '2024.11.25', thumbnail: `${process.env.PUBLIC_URL}/images/립스틱리뷰.jpg` },
   ];
 
   // 리워드 배송 정보
@@ -75,7 +75,7 @@ function MyPage() {
 
   // 진행 중인 리워드 배송
   const pendingRewards = [
-    { id: 'rw001', brand: 'Innisfree', product: '그린티 씨드 세럼 샘플킷', status: 'shipping', trackingNo: '1234567890', image: '/images/비타민세럼리뷰.jpg' },
+    { id: 'rw001', brand: 'Innisfree', product: '그린티 씨드 세럼 샘플킷', status: 'shipping', trackingNo: '1234567890', image: `${process.env.PUBLIC_URL}/images/비타민세럼리뷰.jpg` },
   ];
 
   const [tab, setTab] = useState('profile');

@@ -83,7 +83,7 @@ const sampleCommunityPosts = [
     author: { username: '글로시퀸' }, 
     title: '오늘의 데일리 메이크업 완성💄✨', 
     text: '오늘 출근 메이크업 공유해용ㅋㅋㅋ\n\n베이스는 촉촉하게 쿠션으로 가볍게 올리고 포인트는 립이에용!! 요즘 핫한 코랄핑크 발라봤는데 얼굴 화사해지는거 실화냐구ㅜㅜ\n\n아이메이크업은 브라운 음영으로 자연스럽게~ 아이라이너 꼬리만 살짝 올려서 눈매 살렸어용\n\n다들 오늘 메이크업 어때요?? 같이 공유해봐요!!🥰', 
-    images: ['/images/커뮤니티1.jpg'], 
+    images: [`${process.env.PUBLIC_URL}/images/커뮤니티1.jpg`], 
     createdAt: Date.now() - 1000 * 60 * 60 * 4, 
     likes: 823, 
     comments: 145, 
@@ -95,7 +95,7 @@ const sampleCommunityPosts = [
     author: { username: '뷰티수집가' }, 
     title: '이번달 뷰티 하울 대공개🛍️💕', 
     text: '월급 들어오자마자 질러버린 뷰티템들ㅋㅋㅋㅋ 통장이 텅장됐지만 후회없음!!!\n\n✨ 구매 목록 ✨\n- 샤넬 루쥬 알뤼르 벨벳 익스트림\n- 디올 백스테이지 아이팔레트\n- 에스티로더 더블웨어 파운데이션\n- 조말론 피오니 앤 블러쉬 스웨이드\n\n다들 이중에 써본거 있어요?? 후기 궁금하면 댓글 달아줘요 리뷰 올려드릴겡ㅋㅋ', 
-    images: ['/images/커뮤니티2.jpg'], 
+    images: [`${process.env.PUBLIC_URL}/images/커뮤니티2.jpg`], 
     createdAt: Date.now() - 1000 * 60 * 60 * 12, 
     likes: 567, 
     comments: 98, 
@@ -107,7 +107,7 @@ const sampleCommunityPosts = [
     author: { username: '스킨케어요정' }, 
     title: '트러블 진정시키는 나만의 루틴 공유💚', 
     text: '피부 뒤집어졌을때 제가 쓰는 비상 루틴이에용!!\n\n🌿 1단계: 저자극 클렌저로 부드럽게 세안\n🌿 2단계: 티트리 토너로 진정\n🌿 3단계: 시카 세럼 듬뿍\n🌿 4단계: 마데카 크림으로 마무리\n🌿 +보너스: 스팟패치 붙이고 자기!!\n\n이거 3일만 하면 진짜 가라앉아요ㅜㅜ 트러블 때문에 고민인 분들 해보세용!! 진짜 효과 봄ㅋㅋㅋ', 
-    images: ['/images/커뮤니티3.jpg'], 
+    images: [`${process.env.PUBLIC_URL}/images/커뮤니티3.jpg`], 
     createdAt: Date.now() - 1000 * 60 * 60 * 18, 
     likes: 712, 
     comments: 203, 
@@ -129,6 +129,8 @@ function Home() {
   const [dragOver, setDragOver] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [trails, setTrails] = useState([]); // 마우스 트레일 효과
+  const [showPostSuccess, setShowPostSuccess] = useState(false); // 게시완료 알림
+  const [successMessage, setSuccessMessage] = useState(''); // 성공 메시지
   const fileInputRef = useRef();
   const heroRef = useRef();
   const trailIdRef = useRef(0);
@@ -274,6 +276,7 @@ function Home() {
         rating: 0
       };
       setReviews(prev => [newReview, ...prev]);
+      setSuccessMessage('리뷰');
     } else {
       // 커뮤니티 글 작성
       const newPost = { 
@@ -289,7 +292,12 @@ function Home() {
         category: 'talk'
       };
       setCommunityPosts(prev => [newPost, ...prev]);
+      setSuccessMessage('커뮤니티 글');
     }
+    
+    // 게시완료 알림 표시
+    setShowPostSuccess(true);
+    setTimeout(() => setShowPostSuccess(false), 3000);
     
     // reset form
     setAuthor('');
@@ -304,6 +312,60 @@ function Home() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #fff 0%, #fff5f7 50%, #faf5ff 100%)' }}>
+      {/* 🎉 게시완료 성공 알림 - 더 화려하게 */}
+      {showPostSuccess && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: 'linear-gradient(135deg, #ff4d88 0%, #ff6b9d 50%, #a855f7 100%)',
+          borderRadius: 28,
+          padding: '44px 60px',
+          boxShadow: '0 30px 80px rgba(255,77,136,0.5), 0 0 100px rgba(168,85,247,0.3)',
+          zIndex: 100000,
+          textAlign: 'center',
+          animation: 'popIn 0.4s ease-out',
+          border: '3px solid rgba(255,255,255,0.3)'
+        }}>
+          <div style={{ 
+            position: 'absolute', 
+            top: -20, 
+            left: '50%', 
+            transform: 'translateX(-50%)',
+            fontSize: 50,
+            animation: 'bounce 1s ease-in-out infinite'
+          }}>🎊</div>
+          <div style={{ fontSize: 80, marginBottom: 16, marginTop: 10, animation: 'bounce 0.8s ease-in-out infinite' }}>🎉</div>
+          <div style={{ color: '#fff', fontSize: 34, fontWeight: 900, marginBottom: 10, textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>게시완료!</div>
+          <div style={{ color: 'rgba(255,255,255,0.95)', fontSize: 22, fontWeight: 700 }}>아이 잘하네~ 💕</div>
+          <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: 15, marginTop: 12 }}>{successMessage}이(가) 성공적으로 등록되었어요!</div>
+          <div style={{ 
+            marginTop: 16, 
+            display: 'flex', 
+            gap: 8, 
+            justifyContent: 'center'
+          }}>
+            {['✨', '💖', '🌟', '💕', '✨'].map((emoji, i) => (
+              <span key={i} style={{ 
+                fontSize: 24, 
+                animation: `sparkle ${1 + i * 0.2}s ease-in-out infinite`,
+                animationDelay: `${i * 0.1}s`
+              }}>{emoji}</span>
+            ))}
+          </div>
+        </div>
+      )}
+      {showPostSuccess && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.4)',
+          zIndex: 99999,
+          backdropFilter: 'blur(6px)'
+        }} />
+      )}
+
       {/* 🎨 마우스 브러쉬 트레일 효과 - 파스텔 노랑 (최상단) */}
       {trails.map((trail) => (
         <div
@@ -340,13 +402,22 @@ function Home() {
           0%, 100% { opacity: 0.6; transform: scale(1); }
           50% { opacity: 1; transform: scale(1.05); }
         }
+        @keyframes popIn {
+          0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+          50% { transform: translate(-50%, -50%) scale(1.1); }
+          100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
         @keyframes shimmer {
           0% { background-position: -200% center; }
           100% { background-position: 200% center; }
         }
         @keyframes sparkle {
-          0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
-          50% { opacity: 1; transform: scale(1) rotate(180deg); }
+          0%, 100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
+          50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+        }
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
         }
         @keyframes gradient {
           0% { background-position: 0% 50%; }

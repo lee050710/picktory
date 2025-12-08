@@ -82,9 +82,9 @@ function Navbar() {
           }}>💄</div>
           
           <picture style={{ position: 'relative', zIndex: 1 }}>
-            <source srcSet="/images/picktory.png" type="image/png" />
+            <source srcSet={`${process.env.PUBLIC_URL}/images/picktory.png`} type="image/png" />
             <img 
-              src="/images/picktory.svg" 
+              src={`${process.env.PUBLIC_URL}/images/picktory.svg`} 
               alt="PICKTORY" 
               className="site-logo" 
               style={{

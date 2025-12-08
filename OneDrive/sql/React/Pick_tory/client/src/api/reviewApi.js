@@ -38,7 +38,11 @@ export const fetchReview = async (id) => {
 
 export const createReview = async (payload) => {
 	const all = loadReviews();
-	const newItem = { _id: 'r' + (Date.now()), ...payload, createdAt: new Date().toISOString(), likes: 0 };
+	// Ensure author stored in a consistent shape (object with username)
+	const authorObj = payload && payload.author
+		? (typeof payload.author === 'string' ? { username: payload.author } : (payload.author.username || payload.author.name ? { username: payload.author.username || payload.author.name } : payload.author))
+		: null;
+	const newItem = { _id: 'r' + (Date.now()), ...payload, author: authorObj || payload.author || null, createdAt: new Date().toISOString(), likes: 0, comments: [] };
 
 	// 보상 포인트: 리뷰 작성 시 기본 보상 지급 (클라이언트 모드)
 	const AWARD_POINTS_FOR_REVIEW = 50;
@@ -76,3 +80,71 @@ export const createReview = async (payload) => {
 	newItem.awardedPoints = AWARD_POINTS_FOR_REVIEW;
 	return Promise.resolve({ data: newItem });
 };
+
+// 본인 글만 수정
+export const updateReview = async (id, payload, currentUserName) => {
+	const all = loadReviews();
+	const idx = all.findIndex(r => r._id === id);
+	if (idx === -1) return Promise.resolve({ data: null });
+	const authorName = all[idx].author?.username || all[idx].author?.name || all[idx].author;
+	if (authorName !== currentUserName) return Promise.resolve({ data: null });
+	all[idx] = { ...all[idx], ...payload };
+	saveReviews(all);
+	return Promise.resolve({ data: all[idx] });
+};
+
+// 본인 글만 삭제
+export const deleteReview = async (id, currentUserName) => {
+	let all = loadReviews();
+	const idx = all.findIndex(r => r._id === id && ((r.author?.username || r.author?.name || r.author) === currentUserName));
+	if (idx === -1) return Promise.resolve({ data: null });
+	const removed = all.splice(idx, 1)[0];
+	saveReviews(all);
+	return Promise.resolve({ data: removed });
+};
+
+// 댓글 추가
+export const addComment = async (reviewId, text, authorName) => {
+	const all = loadReviews();
+	const idx = all.findIndex(r => r._id === reviewId);
+	if (idx === -1) return Promise.resolve({ data: null });
+	const comment = { _id: 'c' + Date.now(), text, author: authorName, createdAt: new Date().toISOString() };
+	all[idx].comments = all[idx].comments || [];
+	all[idx].comments.push(comment);
+	saveReviews(all);
+	return Promise.resolve({ data: comment });
+};
+
+// 본인 댓글만 삭제
+export const removeComment = async (reviewId, commentId, currentUserName) => {
+	const all = loadReviews();
+	const idx = all.findIndex(r => r._id === reviewId);
+	if (idx === -1) return Promise.resolve({ data: null });
+	all[idx].comments = all[idx].comments || [];
+	const cidx = all[idx].comments.findIndex(c => c._id === commentId && c.author === currentUserName);
+	if (cidx === -1) return Promise.resolve({ data: null });
+	const removed = all[idx].comments.splice(cidx, 1)[0];
+	saveReviews(all);
+	return Promise.resolve({ data: removed });
+};
+
+export const updateReview = async (id, payload) => {
+	const all = loadReviews();
+	const idx = all.findIndex(r => r._id === id);
+	if (idx === -1) return Promise.resolve({ data: null });
+	const existing = all[idx];
+	const updated = { ...existing, ...payload, updatedAt: new Date().toISOString() };
+	all[idx] = updated;
+	saveReviews(all);
+	return Promise.resolve({ data: updated });
+};
+
+export const deleteReview = async (id) => {
+	let all = loadReviews();
+	const idx = all.findIndex(r => r._id === id);
+	if (idx === -1) return Promise.resolve({ data: null });
+	const removed = all.splice(idx, 1)[0];
+	saveReviews(all);
+	return Promise.resolve({ data: removed });
+};
+

@@ -8,7 +8,7 @@ function GlobalBGM() {
   const audioRef = useRef(null);
 
   // 딸기 맛 사이다 BGM
-  const bgmUrl = '/sounds/strawberry-soda.mp3';
+  const bgmUrl = `${process.env.PUBLIC_URL}/sounds/strawberry-soda.mp3`;
 
   useEffect(() => {
     if (audioRef.current) {

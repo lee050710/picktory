@@ -1,34 +1,35 @@
 // components/ReviewCard.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-function ReviewCard({ id, username, brand, product, title, text, images = [], createdAt, likes = 0, comments = 0, tags = [], rating }) {
+
+function ReviewCard({ id, username, brand, product, title, text, images = [], createdAt, likes = 0, comments = 0, commentsList = [], tags = [], rating, canEdit = false, onEdit, onDelete, onAddComment, onDeleteComment }) {
   const mainImage = images && images.length > 0 ? images[0] : null;
   const [isHovered, setIsHovered] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [localComments, setLocalComments] = useState(commentsList || []);
+  const [commentText, setCommentText] = useState('');
 
-  return (
-    <article 
-      className="card fade-in" 
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{ 
-        marginBottom: 16, 
-        overflow: 'hidden', 
-        padding: 0,
-        position: 'relative',
-        borderRadius: 20,
-        border: '2px solid transparent',
-        background: isHovered 
-          ? 'linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #ffd700, #ff4d88, #a855f7, #ffd700) border-box'
-          : 'linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, rgba(255,77,136,0.3), rgba(168,85,247,0.3)) border-box',
-        boxShadow: isHovered 
-          ? '0 20px 60px rgba(255,215,0,0.3), 0 0 30px rgba(255,77,136,0.2), inset 0 0 30px rgba(255,255,255,0.3)'
-          : '0 8px 24px rgba(0,0,0,0.06)',
-        transform: isHovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-      }}
-    >
+  useEffect(() => {
+    setLocalComments(commentsList || []);
+  }, [commentsList]);
+
+  const currentUser = (() => { try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch (e) { return null; } })();
+  const currentUserName = currentUser ? (currentUser.username || currentUser.name || currentUser.email) : null;
+
+  const handleAddComment = async () => {
+    if (!commentText.trim()) return;
+    if (onAddComment) {
+      await onAddComment(id, commentText);
+      setCommentText('');
+    }
+  };
+
+  const handleDeleteComment = async (commentId, author) => {
+    if (!onDeleteComment) return;
+    await onDeleteComment(id, commentId);
+  };
       {/* ✨ 반짝이는 글래스 효과 */}
       <div style={{
         position: 'absolute',
@@ -90,6 +91,12 @@ function ReviewCard({ id, username, brand, product, title, text, images = [], cr
               <span style={{ animation: 'pulse 2s ease-in-out infinite' }}>📷</span> 사진리뷰
             </span>
           </div>
+          {canEdit && (
+            <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 8 }}>
+              <button onClick={() => onEdit && onEdit(id)} style={{ background: 'rgba(255,255,255,0.9)', border: 'none', padding: '6px 8px', borderRadius: 8, cursor: 'pointer', fontWeight: 700 }}>수정</button>
+              <button onClick={() => onDelete && onDelete(id)} style={{ background: '#fff5f5', border: 'none', padding: '6px 8px', borderRadius: 8, cursor: 'pointer', color: '#ef4444', fontWeight: 700 }}>삭제</button>
+            </div>
+          )}
           {/* 코너 반짝이 장식 */}
           {isHovered && (
             <>
@@ -139,11 +146,37 @@ function ReviewCard({ id, username, brand, product, title, text, images = [], cr
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
-          <div style={{ color: '#777', fontSize: 13, display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{ color: '#777', fontSize: 13, display: 'flex', gap: 12, alignItems: 'center' }}>
             <span>❤️ {likes}</span>
-            <span>💬 {comments}</span>
+            <span style={{ cursor: 'pointer' }} onClick={() => setShowComments(s => !s)}>💬 {localComments.length || comments}</span>
           </div>
         </div>
+        {/* 댓글 섹션 */}
+        {showComments && (
+          <div style={{ padding: '12px 0 0', borderTop: '1px solid #f0f0f0', marginTop: 12 }}>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+              <input value={commentText} onChange={e => setCommentText(e.target.value)} placeholder="댓글을 작성하세요" style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid #eee' }} />
+              <button onClick={handleAddComment} style={{ background: 'linear-gradient(135deg,#ff4d88,#a855f7)', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>등록</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {(localComments || []).map(c => (
+                <div key={c._id} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, background: '#fff', padding: 8, borderRadius: 8, border: '1px solid #faf0f5' }}>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700 }}>{(c.author && (c.author.username || c.author.name)) || '익명'}</div>
+                    <div style={{ fontSize: 13, color: '#333' }}>{c.text}</div>
+                    <div style={{ fontSize: 11, color: '#999', marginTop: 6 }}>{c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}</div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
+                    {currentUserName && c.author && (c.author === currentUserName || c.author.username === currentUserName || c.author.name === currentUserName) && (
+                      <button onClick={() => handleDeleteComment(c._id, c.author)} style={{ background: '#fff5f5', border: 'none', color: '#ef4444', padding: '6px 8px', borderRadius: 8, cursor: 'pointer' }}>삭제</button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {(!localComments || localComments.length === 0) && <div style={{ color: '#888', fontSize: 13 }}>댓글이 없습니다.</div>}
+            </div>
+          </div>
+        )}
       </div>
     </article>
   );
