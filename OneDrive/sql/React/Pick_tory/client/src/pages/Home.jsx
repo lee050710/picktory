@@ -713,7 +713,7 @@ function Home() {
             <span style={{ fontSize: 24 }}>💬</span>
             <div style={{ textAlign: 'left' }}>
               <div style={{ fontWeight: 700, fontSize: 15 }}>커뮤니티 글</div>
-              <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.9 }}>화장법, 정보, 잡담</div>
+              <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.9 }}>화장법, 꿀팁, 질문, 수다</div>
             </div>
           </button>
         </div>
@@ -1297,6 +1297,22 @@ function Home() {
                   fontWeight: 600
                 }}>💬 {post.comments}</span>
               </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+              <button
+                onClick={() => window.location.href = `/community/${post._id}`}
+                style={{
+                  background: 'linear-gradient(135deg,#ff4d88,#a855f7)',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '8px 18px',
+                  borderRadius: 12,
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  fontSize: 15,
+                  boxShadow: '0 2px 8px rgba(139,92,246,0.08)'
+                }}
+              >자세히 보기</button>
             </div>
           </div>
         ))}

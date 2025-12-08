@@ -17,6 +17,7 @@ import Explore from "./pages/Explore";
 import Studio from "./pages/Studio";
 import MyPage from "./pages/MyPage";
 import PersonalColor from "./pages/PersonalColor";
+import CommunityDetail from "./pages/CommunityDetail";
 
 // 인증 페이지
 import Login from "./pages/Auth/Login";
@@ -100,6 +101,9 @@ function App() {
         <Route path="/studio" element={<Studio />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/personal-color" element={<PersonalColor />} />
+
+        {/* 커뮤니티 글 상세 */}
+        <Route path="/community/:id" element={<CommunityDetail />} />
 
         {/* 로그인 / 회원가입 */}
         <Route path="/login" element={<Login />} />
