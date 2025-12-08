@@ -127,24 +127,3 @@ export const removeComment = async (reviewId, commentId, currentUserName) => {
 	saveReviews(all);
 	return Promise.resolve({ data: removed });
 };
-
-export const updateReview = async (id, payload) => {
-	const all = loadReviews();
-	const idx = all.findIndex(r => r._id === id);
-	if (idx === -1) return Promise.resolve({ data: null });
-	const existing = all[idx];
-	const updated = { ...existing, ...payload, updatedAt: new Date().toISOString() };
-	all[idx] = updated;
-	saveReviews(all);
-	return Promise.resolve({ data: updated });
-};
-
-export const deleteReview = async (id) => {
-	let all = loadReviews();
-	const idx = all.findIndex(r => r._id === id);
-	if (idx === -1) return Promise.resolve({ data: null });
-	const removed = all.splice(idx, 1)[0];
-	saveReviews(all);
-	return Promise.resolve({ data: removed });
-};
-
