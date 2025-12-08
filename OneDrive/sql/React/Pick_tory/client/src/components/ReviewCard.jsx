@@ -26,14 +26,16 @@ function ReviewCard({
   const mainImage = images && images.length > 0 ? images[0] : null;
   const [isHovered, setIsHovered] = useState(false);
   const [showComments, setShowComments] = useState(false);
-  const [localComments, setLocalComments] = useState(commentsList || []);
+  const [localComments, setLocalComments] = useState(
+    Array.isArray(commentsList) ? commentsList : []
+  );
   const [commentText, setCommentText] = useState("");
 
   // 🔐 AuthContext에서 로그인 유저 정보
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    setLocalComments(commentsList || []);
+    setLocalComments(Array.isArray(commentsList) ? commentsList : []);
   }, [commentsList]);
 
   // 현재 유저 이름 계산 (Context 우선, 없으면 localStorage fallback)
